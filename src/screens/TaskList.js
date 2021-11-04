@@ -3,7 +3,8 @@ import {
     View,
     Text,
     ImageBackground,
-    StyleSheet
+    StyleSheet,
+    FlatList
 } from 'react-native'
 
 import moment from 'moment'
@@ -12,7 +13,24 @@ import 'moment/locale/pt-br'
 import commonStyles from '../commonStyles'
 import todayImage from '../../assets/imgs/today.jpg'
 
+import Task from '../components/Task'
+
 export default class TaskList extends Component {
+    
+    state = {
+        tasks: [{
+            id: Math.random(),
+            description: 'Comprar livro de Cálculo',
+            estimateAt: new Date(),
+            doneAt: new Date(),
+        }, {
+            id: Math.random(),
+            description: 'Ler livro de Cálculo',
+            estimateAt: new Date(),
+            doneAt: null,
+        }]
+    }
+
     render() {
         const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
         return (
@@ -24,7 +42,8 @@ export default class TaskList extends Component {
                     </View>
                 </ImageBackground>
                 <View style={styles.taskList}>
-                    <Text>Tarefas</Text>
+                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`} 
+                        renderItem={({item}) => <Task {...item}/>}/>
                 </View>
             </View>
         )
