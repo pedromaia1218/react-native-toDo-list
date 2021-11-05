@@ -2,7 +2,8 @@ import React from 'react'
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    TouchableWithoutFeedback
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import moment from 'moment'
@@ -12,16 +13,20 @@ import commonStyles from '../commonStyles'
 
 const Task = props => {
 
-    const doneOrNotStyle = props.doneAt !== null ? {textDecorationLine: 'line-through'} : {}
+    const doneOrNotStyle = props.doneAt !== null ? { textDecorationLine: 'line-through' } : {}
 
     const date = props.doneAt ? props.doneAt : props.estimateAt
-    const exibDate  = moment(date).locale('pt-br').format('ddd, D [de] MMMM')
+    const exibDate = moment(date).locale('pt-br').format('ddd, D [de] MMMM')
 
     return (
         <View style={styles.container}>
-            <View style={styles.checkContainer}>
-                {getCheckView(props.doneAt)}
-            </View>
+            <TouchableWithoutFeedback
+                onPress={() => props.toggleTask(props.id)}
+            >
+                <View style={styles.checkContainer}>
+                    {getCheckView(props.doneAt)}
+                </View>
+            </TouchableWithoutFeedback>
             <View>
                 <Text style={[styles.description, doneOrNotStyle]}>{props.description}</Text>
                 <Text style={styles.date}>{exibDate}</Text>
@@ -46,6 +51,8 @@ function getCheckView(doneAt) {
     }
 }
 
+
+// Estilo para essa página
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',

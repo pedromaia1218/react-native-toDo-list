@@ -16,7 +16,7 @@ import todayImage from '../../assets/imgs/today.jpg'
 import Task from '../components/Task'
 
 export default class TaskList extends Component {
-    
+
     state = {
         tasks: [{
             id: Math.random(),
@@ -31,6 +31,22 @@ export default class TaskList extends Component {
         }]
     }
 
+
+    // A função toggleTask está sendo enviada para o componente Task
+    // por meio das propriedades do flatList para ser usada no componente para alterar o estado
+    toggleTask = taskId => {
+        const tasks = [...this.state.tasks]
+        tasks.forEach(task => {
+            if (task.id === taskId) {
+                task.doneAt = task.doneAt ? null : new Date()
+            }
+        })
+
+        this.setState({ tasks })
+    }
+
+
+    // O que é renderizado na tela
     render() {
         const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
         return (
@@ -42,14 +58,16 @@ export default class TaskList extends Component {
                     </View>
                 </ImageBackground>
                 <View style={styles.taskList}>
-                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`} 
-                        renderItem={({item}) => <Task {...item}/>}/>
+                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`}
+                        renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />} />
                 </View>
             </View>
         )
     }
 }
 
+
+// Estilo para essa página
 const styles = StyleSheet.create({
     container: {
         flex: 1
