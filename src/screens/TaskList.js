@@ -24,7 +24,7 @@ export default class TaskList extends Component {
     // Defining an initial state
     state = {
         showDoneTasks: true,
-        showAddTask: true,
+        showAddTask: false,
         visibleTasks: [],
         tasks: [{
             id: Math.random(),
@@ -82,24 +82,31 @@ export default class TaskList extends Component {
 
         return (
             <View style={styles.container}>
-                <AddTask isVisible={this.state.showAddTask} onCancel={() => this.setState({ showAddTask: false })}/>
-                    <ImageBackground source={todayImage} style={styles.background}>
-                        <View style={styles.iconBar}>
-                            <TouchableOpacity onPress={this.toggleFilter}>
-                                <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
-                                    size={25} color={commonStyles.colors.secondary}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.titleBar}>
-                            <Text style={styles.title}>Hoje</Text>
-                            <Text style={styles.subtitle}>{today}</Text>
-                        </View>
-                    </ImageBackground>
-                    <View style={styles.taskList}>
-                        <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`}
-                            renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />} />
+                <AddTask isVisible={this.state.showAddTask} onCancel={() => this.setState({ showAddTask: false })} />
+                <ImageBackground source={todayImage} style={styles.background}>
+                    <View style={styles.titleBar}>
+                        <Text style={styles.title}>Hoje</Text>
+                        <Text style={styles.subtitle}>{today}</Text>
                     </View>
+                    <View style={styles.iconBar}>
+                        <TouchableOpacity onPress={this.toggleFilter}>
+                            <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
+                                size={25} color={commonStyles.colors.secondary}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </ImageBackground>
+                <View style={styles.taskList}>
+                    <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`}
+                        renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />} />
+                </View>
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => this.setState({ showAddTask: true })}
+                    activeOpacity={0.7}
+                >
+                    <Icon name='plus' size={20} color={commonStyles.colors.secondary} />
+                </TouchableOpacity>
             </View>
         )
     }
@@ -112,28 +119,28 @@ const styles = StyleSheet.create({
         flex: 1
     },
     background: {
-        flex: 3
+        flex: 3,
+        flexDirection: 'row',
+        alignItems: 'stretch'
     },
     taskList: {
         flex: 7
     },
     titleBar: {
-        flex: 3,
-        justifyContent: 'flex-end'
+        flex: 4,
+        justifyContent: 'center',
     },
     title: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.secondary,
         fontSize: normalize(50),
         marginLeft: 20,
-        marginBottom: 20
     },
     subtitle: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.secondary,
         fontSize: normalize(20),
         marginLeft: 20,
-        marginBottom: 30
     },
     iconBar: {
         flex: 1,
@@ -141,5 +148,16 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         marginHorizontal: 15,
         marginTop: Platform.OS === 'ios' ? 40 : '3%'
+    },
+    addButton: {
+        position: 'absolute',
+        right: 30,
+        bottom: 30,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: commonStyles.colors.today,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
