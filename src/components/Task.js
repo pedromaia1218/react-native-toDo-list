@@ -14,7 +14,6 @@ import commonStyles from '../commonStyles'
 const Task = props => {
 
     const doneOrNotStyle = props.doneAt !== null ? { textDecorationLine: 'line-through' } : {}
-
     const date = props.doneAt ? props.doneAt : props.estimateAt
     const exibDate = moment(date).locale('pt-br').format('ddd, D [de] MMMM')
 
