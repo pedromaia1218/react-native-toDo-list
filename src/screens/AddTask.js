@@ -16,12 +16,22 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 
 import commonStyles, { normalize } from '../commonStyles'
 
-const initialState = { desc: '', date: new Date(), showDatePicker: false }
+const initialState = { description: '', date: new Date(), showDatePicker: false }
 
 export default class AddTask extends Component {
 
     state = {
         ...initialState
+    }
+
+    save = () => {
+        const newTask = {
+            description: this.state.description,
+            date: this.state.date
+        }
+
+        this.props.onSave && this.props.onSave(newTask)
+        this.setState({ ...initialState })
     }
 
     getDatePicker = () => {
@@ -64,15 +74,15 @@ export default class AddTask extends Component {
                     <TextInput
                         style={styles.input}
                         placeholder='Informe a tarefa...'
-                        value={this.state.desc}
-                        onChangeText={desc => this.setState({ desc })}
+                        value={this.state.description}
+                        onChangeText={description => this.setState({ description })}
                     />
                     {this.getDatePicker()}
                     <View style={styles.buttons}>
                         <TouchableOpacity onPress={this.props.onCancel}>
                             <Text style={styles.button}>Cancelar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.save}>
                             <Text style={styles.button}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
