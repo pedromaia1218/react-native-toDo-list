@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+    Platform,
     Modal,
     View,
     StyleSheet,
@@ -9,14 +10,42 @@ import {
     TouchableOpacity
 } from 'react-native'
 
+import moment from 'moment'
+import 'moment/locale/pt-br'
+import DateTimePicker from '@react-native-community/datetimepicker'
+
 import commonStyles, { normalize } from '../commonStyles'
 
-const initialState = { desc: '' }
+const initialState = { desc: '', date: new Date(), showDatePicker: false }
 
 export default class AddTask extends Component {
 
     state = {
         ...initialState
+    }
+
+    getDatePicker = () => {
+        let datePicker = <DateTimePicker
+            value={this.state.date}
+            onChange={(_, date) => this.setState({ date, showDatePicker: false })}
+            mode='date'
+        />
+
+        const dateString = moment(this.state.date).format('ddd, D [de] MMMM [de] YYYY')
+
+        if (Platform.OS === 'android') {
+            datePicker = (
+                <View>
+                    <TouchableOpacity onPress={() => this.setState({ showDatePicker: true })}>
+                        <Text style={styles.date}>
+                            {dateString}
+                        </Text>
+                    </TouchableOpacity>
+                    {this.state.showDatePicker && datePicker}
+                </View>
+            )
+        }
+        return datePicker
     }
 
     render() {
@@ -38,6 +67,7 @@ export default class AddTask extends Component {
                         value={this.state.desc}
                         onChangeText={desc => this.setState({ desc })}
                     />
+                    {this.getDatePicker()}
                     <View style={styles.buttons}>
                         <TouchableOpacity onPress={this.props.onCancel}>
                             <Text style={styles.button}>Cancelar</Text>
@@ -89,5 +119,10 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         margin: normalize(20),
         backgroundColor: '#FFF'
+    },
+    date: {
+        fontFamily: commonStyles.fontFamily,
+        fontSize: normalize(20),
+        marginLeft: 20
     }
 })
